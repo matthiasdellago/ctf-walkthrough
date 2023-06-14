@@ -129,9 +129,7 @@ Some obstacles along the way included:
 4. Was only successful when I brute-forced password length. Password was 39 long and not 30 as mentioned on the website.
 5. Flag: flag{gMyWh8fcfhjhWw5K}
 
-### Web Exploitation
-
-### Level 6: Deserialization Attack
+### Level 6
 
 **Solution**: In this level, we exploited a Deserialization vulnerability, which involved a more complex process compared to previous levels:
 
@@ -145,7 +143,7 @@ Some obstacles along the way included:
 8. Navigated through server permissions to find the flag, which was found using the command: cat /var/websec/wwwstudent_43/level06/flag.txt
 9. Flag: tomcat{wmfmRzJpzLtiz7a1}
 
-### Level 7: XML External Entity (XXE) Attack
+### Level 7
 
 **Solution**: In this level, an XML External Entity (XXE) vulnerability was exploited.
 
