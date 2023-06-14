@@ -1,0 +1,25 @@
+The Vuln
+
+There is a off by one error in safecpy, allowing us to join user and host into one string, not separated by any null bytes.
+The buffer for greeting is only 160 chars long, and overflows if we fill it with one of these joined host/user names.
+We can thus overwrite the return address.
+
+Exploit
+
+Load shellcode into the environment and redirect the return adress to it.
+We will be using the sehllcode and the exploit.c file from the lecture as a basis
+
+Return address should be at 160 (buffer) +8.
+So 168 to 176.
+We will solve for the length L of the hostname:
+
+160[buffer] + 8[nulls] + 8[target] = 16["hi welcome to!"] + 40[username] + 2*L
+
+=> L = 60
+
+Thus username has to be 60 chars long, and the last two bytes are the return adress.
+We modify the exploit.c file appropriately.
+
+This way we can open a shell, but apparently dropped some privileges (?) because executing l33t did not yield the desired result.
+
+Instead, we can execute the l33t command directly, instead of opening a shell. Here the challenge is that the shellcode relies on the fact that "/bin/sh" is 7 characters long. The path to the l33t command is significantly longer. A easy fix is to place a symlink to the l33t command in our home directory, "~/linkl" whos name is 7 chars long as well and call it instead of a shell.

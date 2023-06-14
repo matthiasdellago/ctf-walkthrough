@@ -1,0 +1,4 @@
+Binary allwos execution of commands with level 2 privileges (gid). Intended to be used only in /devel/bin.
+Easily escaped by using "../../" etc.
+	find l33t command with whereis.
+Run l33t command as group2.

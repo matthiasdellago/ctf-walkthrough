@@ -1,0 +1,4 @@
+Reading the source code, I noticed a call to ~/.secret.
+I assumed that ~ is defined by the HOME variable in the environment.
+So i changed the HOME variable to the directory the secret was stored in.
+Thus the program diffed .secret with itsself, which of returned exit code 0, giving me a shell.

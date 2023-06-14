@@ -1,0 +1,5 @@
+Vulnerability is in strcpy. Doesn't check if source is larger than target.
+Conveniently strcpy is after the security checks.
+This way we can bypass the check if the acessed binary is in the right directory and within our permissions.
+We pretend to want to acess uniq, and afterwards overflow l33t into the filename buffer from the argument buffer.
+
